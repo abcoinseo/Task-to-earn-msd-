@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task to Earn</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-color: #343a40;
+            --border-color: #dee2e6;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            -webkit-overflow-scrolling: touch; /* Smoother scrolling on iOS */
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header .material-icons {
+            margin-right: 10px;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-tab {
+            padding: 15px 10px;
+            text-align: center;
+            flex-grow: 1;
+            cursor: pointer;
+            color: var(--secondary-color);
+            border-bottom: 3px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        .nav-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: bold;
+        }
+        .nav-tab .material-icons {
+            margin-bottom: 5px;
+        }
+        .tab-content {
+            padding: 15px 0;
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            padding: 15px;
+        }
+        .task-list .task-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .task-list .task-item:last-child {
+            border-bottom: none;
+        }
+        .task-item .icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+        .task-item .details {
+            flex-grow: 1;
+        }
+        .task-item .title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .task-item .reward {
+            color: green;
+            font-weight: bold;
+        }
+        .task-item .action-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .task-item .action-button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .points-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        #adsContainer {
+            margin-bottom: 20px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 400px) {
+            .nav-tab {
+                font-size: 0.8em;
+                padding: 10px 5px;
+            }
+            .nav-tab .material-icons {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <i class="material-icons">task_alt</i> Task Earn
+    </div>
+
+    <div class="nav-tabs">
+        <div class="nav-tab active" data-tab="home">
+            <i class="material-icons">home</i>
+            <span>Home</span>
+        </div>
+        <div class="nav-tab" data-tab="tasks">
+            <i class="material-icons">list_alt</i>
+            <span>Tasks</span>
+        </div>
+        <div class="nav-tab" data-tab="refer">
+            <i class="material-icons">share</i>
+            <span>Refer</span>
+        </div>
+        <div class="nav-tab" data-tab="profile">
+            <i class="material-icons">person</i>
+            <span>Profile</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Home Tab Content -->
+        <div id="home" class="tab-content active">
+            <div class="card">
+                <h3>Welcome!</h3>
+                <p>Complete tasks, refer friends, and earn rewards!</p>
+            </div>
+
+            <div class="card">
+                <h4>Your Current Points:</h4>
+                <div id="userPoints" class="points-display">0 Points</div>
+            </div>
+
+            <div class="card" id="dailyAdsCard">
+                <h4>Daily Ads <span id="adsCount">(0/50)</span></h4>
+                <div id="adsContainer">
+                    <!-- GigaPub Ad will load here -->
+                </div>
+                <button class="btn-primary" id="showAdBtn">Show Ad</button>
+                <p style="margin-top: 10px; font-size: 0.9em; text-align: center;">You earn 10 points per ad.</p>
+            </div>
+
+            <div class="card">
+                <h4>Featured Tasks</h4>
+                <div id="featuredTasksList" class="task-list">
+                    <!-- Featured tasks will be loaded here by JS -->
+                    <p>Loading featured tasks...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks Tab Content -->
+        <div id="tasks" class="tab-content">
+            <div class="card">
+                <h4>All Available Tasks</h4>
+                <div id="allTasksList" class="task-list">
+                    <!-- All tasks will be loaded here by JS -->
+                    <p>Loading all tasks...</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>Completed Tasks</h4>
+                <div id="completedTasksList" class="task-list">
+                    <!-- Completed tasks will be loaded here by JS -->
+                    <p>No completed tasks yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Refer Tab Content -->
+        <div id="refer" class="tab-content">
+            <div class="card">
+                <h4>Invite Friends & Earn!</h4>
+                <p>Share your unique referral link to invite friends. You get 10% of their earnings!</p>
+                <div class="form-group">
+                    <label for="referralLink">Your Referral Link:</label>
+                    <input type="text" id="referralLink" value="Loading..." readonly>
+                </div>
+                <button class="btn-primary" id="copyReferralLinkBtn">Copy Link</button>
+                <p style="margin-top: 15px;">Your total referred earnings: <span id="referredEarnings">0 Points</span></p>
+            </div>
+        </div>
+
+        <!-- Profile Tab Content -->
+        <div id="profile" class="tab-content">
+            <div class="card">
+                <h4>User Profile</h4>
+                <p><strong>Telegram ID:</strong> <span id="profileTelegramId">Loading...</span></p>
+                <p><strong>Username:</strong> <span id="profileUsername">Loading...</span></p>
+                <p><strong>Current Points:</strong> <span id="profilePoints">0 Points</span></p>
+                <p><strong>Total Earnings:</strong> <span id="profileTotalEarnings">0 Points</span></p>
+                <p><strong>Developer:</strong> <a href="https://t.me/abstudioseo" target="_blank">@abstudioseo</a></p>
+            </div>
+
+            <div class="card">
+                <h4>Withdraw Points</h4>
+                <p>Minimum withdrawal: 1000 points = 0.0001 Ton</p>
+                <div class="form-group">
+                    <label for="withdrawAmount">Points to Withdraw (Min 1000):</label>
+                    <input type="number" id="withdrawAmount" min="1000" step="1000" placeholder="e.g., 1000, 2000">
+                </div>
+                <div class="form-group">
+                    <label for="tonAddress">TON Wallet Address:</label>
+                    <input type="text" id="tonAddress" placeholder="Your TON wallet address">
+                </div>
+                <button class="btn-primary" id="submitWithdrawalBtn">Request Withdrawal</button>
+            </div>
+
+            <div class="card">
+                <h4>Withdrawal History</h4>
+                <div id="withdrawalHistoryList">
+                    <p>No withdrawal history.</p>
+                    <!-- Withdrawal history will be loaded here by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- GigaPub Ad SDK -->
+    <script src="https://ad.gigapub.tech/script?id=3303"></script>
+
+    <script>
+        // Firebase Configuration (YOURS)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCCe90-ebayqVHnNBIdJVb5NujfgG0ZpPo",
+            authDomain: "msdbot-279c5.firebaseapp.com",
+            databaseURL: "https://msdbot-279c5-default-rtdb.firebaseio.com",
+            projectId: "msdbot-279c5",
+            storageBucket: "msdbot-279c5.firebasestorage.app",
+            messagingSenderId: "615801744801",
+            appId: "1:615801744801:web:1fb3d1dedc8d61ae686fe0"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let currentUser = null; // Stores Telegram user data
+        let userPoints = 0;
+        let userRef = null; // Firebase ref for current user
+        let adsShownToday = 0;
+        let lastAdDate = '';
+        const MAX_DAILY_ADS = 50;
+        const AD_REWARD = 10;
+        const TASK_VERIFY_DELAY = 2000; // 2 seconds
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Telegram Web App
+            if (window.Telegram && window.Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                currentUser = Telegram.WebApp.initDataUnsafe.user;
+                if (currentUser) {
+                    console.log("Telegram User:", currentUser);
+                    setupUser(currentUser);
+                    // Handle deep linking for referrals
+                    const startParam = Telegram.WebApp.initDataUnsafe.start_param;
+                    if (startParam && startParam.startsWith('ref_')) {
+                        const referrerId = startParam.substring(4);
+                        handleReferral(referrerId, currentUser.id);
+                    }
+                } else {
+                    console.error("Telegram user data not available. This app should be opened via Telegram.");
+                    document.body.innerHTML = "<p style='text-align:center; padding: 20px;'>Please open this app through the Telegram bot.</p>";
+                    Telegram.WebApp.showAlert("Please open this app through the Telegram bot.");
+                }
+            } else {
+                console.error("Telegram Web App SDK not found or not ready. Running in standalone mode (limited functionality).");
+                // For development outside Telegram, simulate a user
+                currentUser = {
+                    id: 123456789,
+                    first_name: "Dev",
+                    last_name: "User",
+                    username: "devuser",
+                    language_code: "en"
+                };
+                setupUser(currentUser);
+            }
+
+            // Tab Navigation
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab).classList.add('active');
+                });
+            });
+
+            // Event Listeners for buttons
+            document.getElementById('showAdBtn').addEventListener('click', showDailyAd);
+            document.getElementById('copyReferralLinkBtn').addEventListener('click', copyReferralLink);
+            document.getElementById('submitWithdrawalBtn').addEventListener('click', submitWithdrawalRequest);
+        });
+
+        async function setupUser(user) {
+            userRef = database.ref('users/' + user.id);
+
+            // Set user initial data if not exists and listen for changes
+            userRef.on('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (!userData) {
+                    userRef.set({
+                        telegramId: user.id,
+                        firstName: user.first_name,
+                        username: user.username || '',
+                        points: 0,
+                        totalEarnings: 0,
+                        referredBy: '',
+                        referralCount: 0,
+                        referredEarnings: 0,
+                        tasksCompleted: {},
+                        withdrawalHistory: {},
+                        ads: {
+                            lastAdDate: '',
+                            countToday: 0
+                        }
+                    });
+                    userPoints = 0;
+                } else {
+                    userPoints = userData.points || 0;
+                    document.getElementById('profileTotalEarnings').textContent = (userData.totalEarnings || 0) + ' Points';
+                    document.getElementById('referredEarnings').textContent = (userData.referredEarnings || 0) + ' Points';
+
+                    // Daily Ads reset logic
+                    const today = new Date().toISOString().slice(0, 10);
+                    if (userData.ads && userData.ads.lastAdDate === today) {
+                        adsShownToday = userData.ads.countToday;
+                    } else {
+                        adsShownToday = 0;
+                        userRef.child('ads').update({
+                            lastAdDate: today,
+                            countToday: 0
+                        });
+                    }
+                    updateAdsCountDisplay();
+                }
+                updatePointsDisplay();
+                updateProfileDisplay(userData);
+                generateReferralLink(user.id);
+                loadWithdrawalHistory(userData.withdrawalHistory || {});
+            });
+
+            loadTasks(); // Load tasks for the user
+        }
+
+        function updatePointsDisplay() {
+            document.getElementById('userPoints').textContent = `${userPoints} Points`;
+            document.getElementById('profilePoints').textContent = `${userPoints} Points`;
+        }
+
+        function updateProfileDisplay(userData) {
+            document.getElementById('profileTelegramId').textContent = currentUser.id;
+            document.getElementById('profileUsername').textContent = currentUser.username || currentUser.first_name;
+            // Points updated by listener
+        }
+
+        function updateAdsCountDisplay() {
+            document.getElementById('adsCount').textContent = `(${adsShownToday}/${MAX_DAILY_ADS})`;
+            if (adsShownToday >= MAX_DAILY_ADS) {
+                document.getElementById('showAdBtn').disabled = true;
+                document.getElementById('showAdBtn').textContent = 'Daily Ad Limit Reached';
+            } else {
+                document.getElementById('showAdBtn').disabled = false;
+                document.getElementById('showAdBtn').textContent = 'Show Ad';
+            }
+        }
+
+        async function showDailyAd() {
+            if (adsShownToday >= MAX_DAILY_ADS) {
+                Telegram.WebApp.showAlert("You have reached your daily ad limit!");
+                return;
+            }
+
+            Telegram.WebApp.showLoader();
+            try {
+                // Ensure GigaPub script is loaded if not already
+                if (typeof window.showGiga === 'function') {
+                    await window.showGiga();
+                    Telegram.WebApp.hideLoader();
+                    // Ad shown successfully, grant reward
+                    adsShownToday++;
+                    userRef.child('ads').update({
+                        countToday: adsShownToday,
+                        lastAdDate: new Date().toISOString().slice(0, 10)
+                    });
+                    userRef.update({
+                        points: userPoints + AD_REWARD,
+                        totalEarnings: firebase.database.ServerValue.increment(AD_REWARD)
+                    });
+                    userPoints += AD_REWARD; // Update local state immediately
+                    updatePointsDisplay();
+                    updateAdsCountDisplay();
+                    Telegram.WebApp.showAlert(`You earned ${AD_REWARD} points for watching an ad!`);
+                } else {
+                    throw new Error("GigaPub SDK not fully loaded.");
+                }
+            } catch (e) {
+                Telegram.WebApp.hideLoader();
+                console.error("Error showing ad:", e);
+                Telegram.WebApp.showAlert("Failed to load ad. Please try again later.");
+            }
+        }
+
+        async function handleReferral(referrerId, newUserId) {
+            // Prevent self-referral or re-referral
+            if (referrerId === newUserId.toString()) {
+                console.log("Self-referral attempt blocked.");
+                return;
+            }
+
+            const newUserSnapshot = await database.ref('users/' + newUserId).once('value');
+            const newUserData = newUserSnapshot.val();
+            if (newUserData && newUserData.referredBy) {
+                console.log("User already referred by someone else.");
+                return;
+            }
+
+            const referrerRef = database.ref('users/' + referrerId);
+            const referrerSnapshot = await referrerRef.once('value');
+            if (referrerSnapshot.exists()) {
+                // Link new user to referrer
+                userRef.update({ referredBy: referrerId });
+                // Increment referrer's count
+                referrerRef.update({
+                    referralCount: firebase.database.ServerValue.increment(1)
+                });
+                console.log(`User ${newUserId} successfully referred by ${referrerId}`);
+                Telegram.WebApp.showAlert(`You were referred by user ${referrerId}!`);
+            } else {
+                console.warn(`Referrer ${referrerId} not found.`);
+            }
+        }
+
+        function generateReferralLink(userId) {
+            const botUsername = "@Tasktoearn777_bot"; // Replace with your bot's username
+            const referralLink = `https://t.me/${botUsername}/app?start=ref_${userId}`;
+            document.getElementById('referralLink').value = referralLink;
+        }
+
+        function copyReferralLink() {
+            const referralLinkInput = document.getElementById('referralLink');
+            referralLinkInput.select();
+            referralLinkInput.setSelectionRange(0, 99999); /* For mobile devices */
+            document.execCommand('copy');
+            Telegram.WebApp.showAlert('Referral link copied to clipboard!');
+        }
+
+        function loadTasks() {
+            const tasksRef = database.ref('tasks');
+            tasksRef.on('value', (snapshot) => {
+                const tasks = snapshot.val();
+                const allTasksList = document.getElementById('allTasksList');
+                const featuredTasksList = document.getElementById('featuredTasksList');
+                const completedTasksList = document.getElementById('completedTasksList');
+                allTasksList.innerHTML = '';
+                featuredTasksList.innerHTML = '';
+                completedTasksList.innerHTML = '';
+
+                if (!tasks) {
+                    allTasksList.innerHTML = '<p>No tasks available.</p>';
+                    featuredTasksList.innerHTML = '<p>No featured tasks available.</p>';
+                    return;
+                }
+
+                // Get user's completed tasks
+                userRef.child('tasksCompleted').once('value', (completedSnapshot) => {
+                    const userCompletedTasks = completedSnapshot.val() || {};
+
+                    Object.keys(tasks).forEach(taskId => {
+                        const task = tasks[taskId];
+                        const isCompleted = userCompletedTasks[taskId] === true;
+
+                        const taskHtml = `
+                            <div class="task-item" data-task-id="${taskId}">
+                                <span class="icon">${task.iconEmoji || '⭐'}</span>
+                                <div class="details">
+                                    <div class="title">${task.title}</div>
+                                    <p>${task.description}</p>
+                                    <div class="reward">${task.reward} Points</div>
+                                </div>
+                                ${isCompleted
+                                    ? '<button class="action-button" disabled>Completed</button>'
+                                    : `<button class="action-button" onclick="startTask('${taskId}', '${task.taskUrl.replace(/'/g, "\\'")}', ${task.reward})">Start Task</button>`
+                                }
+                            </div>
+                        `;
+
+                        allTasksList.insertAdjacentHTML('beforeend', taskHtml);
+                        // For simplicity, let's say all tasks are featured initially
+                        if (!isCompleted) {
+                           featuredTasksList.insertAdjacentHTML('beforeend', taskHtml);
+                        } else {
+                           completedTasksList.insertAdjacentHTML('beforeend', taskHtml);
+                        }
+                    });
+
+                    if (allTasksList.innerHTML === '') allTasksList.innerHTML = '<p>No tasks available.</p>';
+                    if (featuredTasksList.innerHTML === '') featuredTasksList.innerHTML = '<p>No featured tasks available.</p>';
+                    if (completedTasksList.innerHTML === '') completedTasksList.innerHTML = '<p>No completed tasks yet.</p>';
+                });
+            });
+        }
+
+        async function startTask(taskId, taskUrl, reward) {
+            Telegram.WebApp.showLoader();
+            Telegram.WebApp.showAlert(`Opening task: ${taskUrl}`);
+            window.open(taskUrl, '_blank'); // Open task in a new tab/browser
+
+            // Simulate verification delay
+            await new Promise(resolve => setTimeout(resolve, TASK_VERIFY_DELAY));
+            Telegram.WebApp.hideLoader();
+
+            // After delay, ask user to confirm completion or auto-complete
+            Telegram.WebApp.showConfirm("Did you complete the task?", async (confirmed) => {
+                if (confirmed) {
+                    await completeTask(taskId, reward);
+                } else {
+                    Telegram.WebApp.showAlert("Task not marked as complete.");
+                }
+            });
+        }
+
+        async function completeTask(taskId, reward) {
+            if (!currentUser) return;
+
+            const userTasksRef = userRef.child('tasksCompleted');
+            const taskCompletedSnapshot = await userTasksRef.child(taskId).once('value');
+
+            if (taskCompletedSnapshot.val() === true) {
+                Telegram.WebApp.showAlert("You have already completed this task.");
+                return;
+            }
+
+            Telegram.WebApp.showLoader();
+            try {
+                // Mark task as completed for the user
+                await userTasksRef.update({ [taskId]: true });
+
+                // Update user points and total earnings
+                await userRef.update({
+                    points: firebase.database.ServerValue.increment(reward),
+                    totalEarnings: firebase.database.ServerValue.increment(reward)
+                });
+
+                userPoints += reward; // Update local state
+                updatePointsDisplay();
+
+                // Check for referrer and give referral bonus (10% of task reward)
+                const userDataSnapshot = await userRef.once('value');
+                const userData = userDataSnapshot.val();
+                if (userData && userData.referredBy) {
+                    const referrerId = userData.referredBy;
+                    const referrerRef = database.ref('users/' + referrerId);
+                    const referralBonus = Math.floor(reward * 0.10); // 10%
+                    if (referralBonus > 0) {
+                        await referrerRef.update({
+                            points: firebase.database.ServerValue.increment(referralBonus),
+                            referredEarnings: firebase.database.ServerValue.increment(referralBonus)
+                        });
+                        Telegram.WebApp.showAlert(`You earned ${reward} points! And your referrer ${referrerId} got ${referralBonus} points.`);
+                    } else {
+                         Telegram.WebApp.showAlert(`You earned ${reward} points!`);
+                    }
+                } else {
+                    Telegram.WebApp.showAlert(`You earned ${reward} points!`);
+                }
+
+                Telegram.WebApp.showAlert(`Task "${taskId}" completed! You earned ${reward} points.`);
+                loadTasks(); // Reload tasks to update UI
+            } catch (error) {
+                console.error("Error completing task:", error);
+                Telegram.WebApp.showAlert("Failed to complete task. Please try again.");
+            } finally {
+                Telegram.WebApp.hideLoader();
+            }
+        }
+
+        async function submitWithdrawalRequest() {
+            if (!currentUser) {
+                Telegram.WebApp.showAlert("User not logged in.");
+                return;
+            }
+
+            const amountInput = document.getElementById('withdrawAmount');
+            const tonAddressInput = document.getElementById('tonAddress');
+
+            const amount = parseInt(amountInput.value);
+            const tonAddress = tonAddressInput.value.trim();
+
+            if (isNaN(amount) || amount < 1000 || amount % 1000 !== 0) {
+                Telegram.WebApp.showAlert("Please enter a valid withdrawal amount (minimum 1000 points, in multiples of 1000).");
+                return;
+            }
+            if (!tonAddress) {
+                Telegram.WebApp.showAlert("Please enter your TON wallet address.");
+                return;
+            }
+
+            if (userPoints < amount) {
+                Telegram.WebApp.showAlert("Insufficient points for this withdrawal.");
+                return;
+            }
+
+            Telegram.WebApp.showConfirm(`Request withdrawal of ${amount} points (${amount / 10000000} TON) to ${tonAddress}?`, async (confirmed) => {
+                if (confirmed) {
+                    Telegram.WebApp.showLoader();
+                    try {
+                        const withdrawalId = database.ref('withdrawalRequests').push().key;
+                        const withdrawalData = {
+                            id: withdrawalId,
+                            userId: currentUser.id,
+                            username: currentUser.username || currentUser.first_name,
+                            amountPoints: amount,
+                            tonAddress: tonAddress,
+                            tonEquivalent: amount / 10000000, // 1000 points = 0.0001 TON, so 1 point = 0.0000001 TON
+                            timestamp: firebase.database.ServerValue.TIMESTAMP,
+                            status: 'pending' // pending, approved, rejected
+                        };
+
+                        // Add withdrawal request to a dedicated 'withdrawalRequests' node
+                        await database.ref('withdrawalRequests/' + withdrawalId).set(withdrawalData);
+
+                        // Deduct points from user
+                        await userRef.update({
+                            points: firebase.database.ServerValue.increment(-amount)
+                        });
+
+                        // Add to user's personal withdrawal history
+                        await userRef.child('withdrawalHistory/' + withdrawalId).set({
+                            amountPoints: amount,
+                            tonAddress: tonAddress,
+                            status: 'pending',
+                            timestamp: firebase.database.ServerValue.TIMESTAMP
+                        });
+
+                        userPoints -= amount; // Update local state
+                        updatePointsDisplay();
+
+                        Telegram.WebApp.showAlert("Withdrawal request submitted successfully! It will be processed soon.");
+                        amountInput.value = '';
+                        tonAddressInput.value = '';
+                    } catch (error) {
+                        console.error("Error submitting withdrawal request:", error);
+                        Telegram.WebApp.showAlert("Failed to submit withdrawal request. Please try again.");
+                    } finally {
+                        Telegram.WebApp.hideLoader();
+                    }
+                }
+            });
+        }
+
+        function loadWithdrawalHistory(history) {
+            const historyList = document.getElementById('withdrawalHistoryList');
+            historyList.innerHTML = '';
+            const withdrawalIds = Object.keys(history);
+
+            if (withdrawalIds.length === 0) {
+                historyList.innerHTML = '<p>No withdrawal history.</p>';
+                return;
+            }
+
+            const sortedWithdrawals = withdrawalIds
+                .map(id => ({ id, ...history[id] }))
+                .sort((a, b) => b.timestamp - a.timestamp); // Sort by newest first
+
+            sortedWithdrawals.forEach(withdrawal => {
+                const date = new Date(withdrawal.timestamp).toLocaleString();
+                const statusColor = {
+                    'pending': 'orange',
+                    'approved': 'green',
+                    'rejected': 'red'
+                }[withdrawal.status] || 'gray';
+
+                const itemHtml = `
+                    <div class="card" style="margin-bottom: 10px; padding: 10px;">
+                        <p><strong>Amount:</strong> ${withdrawal.amountPoints} points</p>
+                        <p><strong>TON Address:</strong> ${withdrawal.tonAddress}</p>
+                        <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: bold;">${withdrawal.status.toUpperCase()}</span></p>
+                        <p><strong>Date:</strong> ${date}</p>
+                    </div>
+                `;
+                historyList.insertAdjacentHTML('beforeend', itemHtml);
+            });
+        }
+    </script>
+</body>
+              </html>
